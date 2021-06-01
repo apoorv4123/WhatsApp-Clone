@@ -45,12 +45,24 @@
         android:gravity="center"
         android:orientation="horizontal">
 
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/ccp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            app:ccp_autoDetectCountry="true"
+            app:ccp_showNameCode="false"
+            tools:ccp_contentColor="#fcfdfd"
+            tools:ccp_textSize="20dp" />
+
         <EditText
             android:id="@+id/phoneNumberEt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
+            android:maxLength="10"
             android:imeActionId="6"
             android:imeActionLabel="Send"
             android:imeOptions="actionUnspecified"
