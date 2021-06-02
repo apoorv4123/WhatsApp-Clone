@@ -1,5 +1,6 @@
 package com.example.whatsappclone
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -9,12 +10,14 @@ import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var phoneNumber:String
+    private lateinit var phoneNumber: String
     private lateinit var countryCode: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        // Add Hint Request for phone number(for getting suggestions for phoneNumberEt)
 
         phoneNumberEt.addTextChangedListener {
             nextBtn.isEnabled =
@@ -28,7 +31,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun checkNumber() {
-        countryCode = ccp.selectedCountryCodeWithPlus //Firebase needs to be given +91, +92, etc format
+        countryCode =
+            ccp.selectedCountryCodeWithPlus //Firebase needs to be given +91, +92, etc format
         phoneNumber = countryCode + phoneNumberEt.text.toString()
 
         notifyUser()// Make a dialog box and show it to the user: Optional
@@ -36,12 +40,14 @@ class LoginActivity : AppCompatActivity() {
 
     private fun notifyUser() {
         MaterialAlertDialogBuilder(this).apply {
-            setMessage("We will be verifying the phone number:$phoneNumber\n " +
-                    "Is this okay, or would you like to edit the number?" )
-            setPositiveButton("Ok"){ _,_ -> // These are just two empty & un-needed arguments of lambda functions
+            setMessage(
+                "We will be verifying the phone number:$phoneNumber\n " +
+                        "Is this okay, or would you like to edit the number?"
+            )
+            setPositiveButton("Ok") { _, _ -> // These are just two empty & un-needed arguments of lambda functions
                 showOtpActivity()
             }
-            setNegativeButton("Edit"){dialog,which ->
+            setNegativeButton("Edit") { dialog, which ->
                 dialog.dismiss()
             }
             setCancelable(false)
@@ -51,6 +57,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun showOtpActivity() {
-        TODO("Not yet implemented")
+        startActivity(Intent(this, OtpActivity::class.java).putExtra(PHONE_NUMBER, phoneNumber))
+        finish()// so that login Activity removes from the backstack
     }
 }
