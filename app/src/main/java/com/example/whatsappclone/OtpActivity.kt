@@ -159,7 +159,15 @@ class OtpActivity : AppCompatActivity(), View.OnClickListener {
                     // You can also make a dialog here so that user does not do anything else
                     // while this is happening
                     // Move onto next Activity
+                    if (::progressDialog.isInitialized) {
+                        progressDialog.dismiss()
+                    }
+                    startActivity(Intent(this, SignUpActivity::class.java))
+                    finish()
                 } else {
+                    if (::progressDialog.isInitialized) {
+                        progressDialog.dismiss()
+                    }
                     notifyUserAndRetry("Your Phone Number verification failed. Try again!")
                 }
             }
@@ -261,3 +269,6 @@ fun Context.createProgressDialog(message: String, isCancelable: Boolean): Progre
         setCanceledOnTouchOutside(false)
     }
 }
+
+// This request is missing a valid app identifier, meaning that neither SafetyNet checks
+// nor reCAPTCHA checks succeeded. Please try again, or check the logcat for more details.
