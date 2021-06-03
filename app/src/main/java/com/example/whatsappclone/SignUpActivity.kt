@@ -44,13 +44,13 @@ class SignUpActivity : AppCompatActivity() {
         nextBtn.setOnClickListener {
             nextBtn.isEnabled = false
             val name = nameEt.text.toString()
-            if(name.isEmpty()){
+            if (name.isEmpty()) {
                 Toast.makeText(this, "Name cannot be empty", Toast.LENGTH_SHORT).show()
-            }else if(!::downloadUrl.isInitialized){// If image is not set
+            } else if (!::downloadUrl.isInitialized) {// If image is not set
                 Toast.makeText(this, "Image cannot be empty", Toast.LENGTH_SHORT).show()
-            }else{
+            } else {
                 // Upload the user
-                val user = User(name,downloadUrl,downloadUrl,auth.uid!!)
+                val user = User(name, downloadUrl, downloadUrl, auth.uid!!)
                 database.collection("users").document(auth.uid!!).set(user).addOnSuccessListener {
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
