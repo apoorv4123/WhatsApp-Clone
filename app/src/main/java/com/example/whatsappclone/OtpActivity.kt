@@ -14,6 +14,8 @@ import android.text.style.ClickableSpan
 import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
+import com.example.whatsappclone.ui.LoginActivity
+import com.example.whatsappclone.ui.SignUpActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException

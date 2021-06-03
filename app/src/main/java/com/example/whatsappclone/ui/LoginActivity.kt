@@ -1,10 +1,13 @@
-package com.example.whatsappclone
+package com.example.whatsappclone.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
+import com.example.whatsappclone.OtpActivity
+import com.example.whatsappclone.PHONE_NUMBER
+import com.example.whatsappclone.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.activity_login.*
 

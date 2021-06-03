@@ -1,4 +1,4 @@
-package com.example.whatsappclone
+package com.example.whatsappclone.ui
 
 import android.Manifest
 import android.app.Activity
@@ -10,7 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.example.whatsappclone.models.User
+import com.example.whatsappclone.R
+import com.example.whatsappclone.modals.User
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -21,16 +22,16 @@ import kotlinx.android.synthetic.main.activity_sign_up.*
 
 class SignUpActivity : AppCompatActivity() {
 
-    val storage by lazy {
+    private val storage by lazy {
         FirebaseStorage.getInstance()
     }
-    val auth by lazy {
+    private val auth by lazy {
         FirebaseAuth.getInstance()
     }
-    val database by lazy {
+    private val database by lazy {
         FirebaseFirestore.getInstance()
     }
-    lateinit var downloadUrl: String
+    private lateinit var downloadUrl: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

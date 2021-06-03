@@ -1,4 +1,4 @@
-package com.example.whatsappclone
+package com.example.whatsappclone.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
