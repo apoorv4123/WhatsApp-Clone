@@ -51,6 +51,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-storage:20.0.0'
     implementation 'com.google.firebase:firebase-firestore:23.0.0'
+    implementation 'com.firebaseui:firebase-ui-firestore:7.1.1'
+
+    // Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
     // Country code picker
     implementation 'com.hbb20:ccp:2.5.1'
