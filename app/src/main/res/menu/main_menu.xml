@@ -5,6 +5,10 @@
         android:id="@+id/history"
         app:showAsAction="never"
         android:title="@string/settings" />
+    <item
+        android:id="@+id/logOut"
+        app:showAsAction="never"
+        android:title="Log Out" />
 
     <item
         android:id="@+id/search"
