@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.whatsappclone.R
 import com.example.whatsappclone.modals.User
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter
@@ -18,9 +19,12 @@ import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_chats.*
 import java.lang.Exception
 
+private const val DELETED_VIEW_TYPE = 1
+private const val NORMAL_VIEW_TYPE = 2
+
 class PeopleFragment : Fragment() { // We'll show the list of users inside people fragment
 
-    lateinit var mAdapter: FirestorePagingAdapter<User, UsersViewHolder>
+    lateinit var mAdapter: FirestorePagingAdapter<User, RecyclerView.ViewHolder>
     val auth by lazy {
         FirebaseAuth.getInstance()
     }
@@ -53,14 +57,21 @@ class PeopleFragment : Fragment() { // We'll show the list of users inside peopl
             .setQuery(database, config, User::class.java)
             .build()
 
-        mAdapter = object : FirestorePagingAdapter<User, UsersViewHolder>(options) {
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UsersViewHolder {
-                val view = layoutInflater.inflate(R.layout.list_item, parent, false)
-                return UsersViewHolder(view)
+        mAdapter = object : FirestorePagingAdapter<User, RecyclerView.ViewHolder>(options) {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+                return when (viewType) {
+                    NORMAL_VIEW_TYPE -> UsersViewHolder(layoutInflater.inflate(R.layout.list_item, parent, false))
+                    else -> EmptyViewHolder(
+                        layoutInflater.inflate(R.layout.empty_view, parent, false))
+                }
             }
 
-            override fun onBindViewHolder(holder: UsersViewHolder, position: Int, model: User) {
-                holder.bind(user = model)
+            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, model: User) {
+                if (holder is UsersViewHolder) {
+                    holder.bind(user = model)
+                } else {
+                    // Todo - Something
+                }
             }
 
             override fun onLoadingStateChanged(state: LoadingState) {
@@ -81,6 +92,16 @@ class PeopleFragment : Fragment() { // We'll show the list of users inside peopl
 
             override fun onError(e: Exception) {
                 super.onError(e)
+            }
+
+            override fun getItemViewType(position: Int): Int {
+                val item =
+                    getItem(position)?.toObject(User::class.java) // Get item at current position & convert it into user class
+                return if (auth.uid == item!!.uid) { // This can be used to handle blocklist too
+                    DELETED_VIEW_TYPE
+                } else {
+                    NORMAL_VIEW_TYPE
+                }
             }
 
         }
