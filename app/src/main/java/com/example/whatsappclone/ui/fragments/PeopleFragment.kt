@@ -1,5 +1,6 @@
 package com.example.whatsappclone.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.whatsappclone.R
 import com.example.whatsappclone.modals.User
+import com.example.whatsappclone.ui.ChatActivity
+import com.example.whatsappclone.ui.IMAGE
+import com.example.whatsappclone.ui.NAME
+import com.example.whatsappclone.ui.UID
 import com.firebase.ui.firestore.paging.FirestorePagingAdapter
 import com.firebase.ui.firestore.paging.FirestorePagingOptions
 import com.firebase.ui.firestore.paging.LoadingState
@@ -68,7 +73,14 @@ class PeopleFragment : Fragment() { // We'll show the list of users inside peopl
 
             override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, model: User) {
                 if (holder is UsersViewHolder) {
-                    holder.bind(user = model)
+                    holder.bind(user = model) { name: String, photo: String, id: String ->
+                        // call startActivity with all the intent arguments
+                        val intent = Intent(requireContext(), ChatActivity::class.java)
+                        intent.putExtra(UID,id)
+                        intent.putExtra(NAME , name)
+                        intent.putExtra(IMAGE, photo)
+                        startActivity(intent)
+                    }
                 } else {
                     // Todo - Something
                 }
