@@ -26,7 +26,7 @@ class PeopleFragment : Fragment() { // We'll show the list of users inside peopl
     }
     val database by lazy {
         FirebaseFirestore.getInstance().collection("users")
-            .orderBy("name", Query.Direction.DESCENDING)
+            .orderBy("name", Query.Direction.ASCENDING)
     }
 
     override fun onCreateView(
