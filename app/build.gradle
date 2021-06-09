@@ -59,4 +59,9 @@ dependencies {
 
     // Country code picker
     implementation 'com.hbb20:ccp:2.5.1'
+
+    // Flexbox Layout
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
+
+    implementation 'com.vanniktech:emoji-google:0.6.0'
 }
