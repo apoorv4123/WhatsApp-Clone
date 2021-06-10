@@ -1,8 +1,10 @@
 package com.example.whatsappclone.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.whatsappclone.R
+import com.example.whatsappclone.modals.Message
 import com.example.whatsappclone.modals.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -29,7 +31,7 @@ class ChatActivity : AppCompatActivity() {
     private val image by lazy {
         intent.getStringExtra(IMAGE)
     }
-    private val mCurrentId by lazy {
+    private val mCurrentUid by lazy {
         FirebaseAuth.getInstance().uid!!
     }
     private val db by lazy {
@@ -42,7 +44,7 @@ class ChatActivity : AppCompatActivity() {
         EmojiManager.install(GoogleEmojiProvider())
         setContentView(R.layout.activity_chat)
 
-        FirebaseFirestore.getInstance().collection("users").document(mCurrentId).get()
+        FirebaseFirestore.getInstance().collection("users").document(mCurrentUid).get()
             .addOnSuccessListener {
                 currentUser = it.toObject(User::class.java)!!
             }
@@ -50,5 +52,41 @@ class ChatActivity : AppCompatActivity() {
         nameTv.text = name
         Picasso.get().load(image).into(userImgView)
 
+        sendBtn.setOnClickListener {
+            msgEdtv.text?.let {
+                if (it.isNotEmpty()) {
+                    sendMessage(it.toString())
+                    it.clear() // empty the textView
+                }
+            }
+        }
+
     }
+
+    private fun sendMessage(msg: String) {
+        val id =
+            getMessages(friendId!!).push().key // push() function creates a new id( a unique key) at path -> messages/friendId
+        checkNotNull(id) { "Cannot be null" } // This will cause an exception and will stop the working of the app
+        val msgMap = Message(msg, mCurrentUid, id)
+        getMessages(friendId!!).child(id).setValue(msgMap).addOnSuccessListener {
+            // setValue() - This will set the message in realtime database
+            Log.i("CHATS", "completed")
+        }.addOnFailureListener {
+            Log.i("CHATS", it.localizedMessage)
+        }
+    }
+
+    private fun getMessages(friendId: String) = db.reference.child("messages/${getId(friendId)}")
+
+    private fun getInbox(toUser: String, fromUser: String) =
+        db.reference.child("chats/$toUser/$fromUser")
+
+    private fun getId(friendId: String): String { // Id for the messages
+        return if (friendId > mCurrentUid) {
+            mCurrentUid + friendId
+        } else {
+            friendId + mCurrentUid
+        }
+    }
+
 }
