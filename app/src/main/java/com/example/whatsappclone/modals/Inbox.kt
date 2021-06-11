@@ -3,12 +3,12 @@ package com.example.whatsappclone.modals
 import java.util.*
 
 data class Inbox(
-    var count: Int = 0,
-    val from: String,
-    var image: String,
     val msg: String,
+    var from: String,
     var name: String,
-    val time: Date = Date()
+    var image: String,
+    val time: Date = Date(),
+    var count: Int = 0
 ) {
-    constructor() : this(0, "", "", "", "", Date())
+    constructor() : this("", "", "", "", Date(),0)
 }
