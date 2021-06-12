@@ -3,18 +3,23 @@ package com.example.whatsappclone.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.whatsappclone.R
 import com.example.whatsappclone.modals.ChatEvent
 import com.example.whatsappclone.modals.DateHeader
 import com.example.whatsappclone.modals.Message
-import com.example.whatsappclone.ui.fragments.EmptyViewHolder
 import com.example.whatsappclone.utils.formatAsTime
+import kotlinx.android.synthetic.main.list_item_chat_recv_message.view.*
+import kotlinx.android.synthetic.main.list_item_chat_recv_message.view.highFiveImg
 import kotlinx.android.synthetic.main.list_item_chat_sent_message.view.*
 import kotlinx.android.synthetic.main.list_item_date_header.view.*
 
 class ChatAdapter(private val list: MutableList<ChatEvent>, private val mCurrentUid: String) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    var highFiveClick: ((id: String, status: Boolean) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflate = { layout: Int ->
             LayoutInflater.from(parent.context).inflate(layout, parent, false)
@@ -43,6 +48,28 @@ class ChatAdapter(private val list: MutableList<ChatEvent>, private val mCurrent
                 holder.itemView.apply {
                     content.text = item.msg
                     time.text = item.sentAt.formatAsTime()
+                    when (getItemViewType(position)) {
+                        TEXT_MESSAGE_RECEIVED -> {
+                            holder.itemView.messageCardView.setOnClickListener(object :
+                                DoubleClickListener() {
+                                override fun onDoubleClick(v: View?) {
+                                    highFiveClick?.invoke(item.msgId, !item.liked)
+                                }
+                            })
+                            holder.itemView.highFiveImg.apply {
+                                isVisible = position == itemCount - 1 || item.liked
+                                isSelected = item.liked
+                                setOnClickListener {
+                                    highFiveClick?.invoke(item.msgId, !isSelected)
+                                }
+                            }
+                        }
+                        TEXT_MESSAGE_SENT -> {
+                            holder.itemView.highFiveImg.apply {
+                                isVisible = item.liked
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -77,4 +104,26 @@ class ChatAdapter(private val list: MutableList<ChatEvent>, private val mCurrent
         private const val DATE_HEADER = 2
     }
 
+}
+
+abstract class DoubleClickListener : View.OnClickListener {
+    var lastClickTime: Long = 0
+    override fun onClick(v: View?) {
+        val clickTime = System.currentTimeMillis()
+        if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA) {
+            onDoubleClick(v)
+            lastClickTime = 0
+        }
+//        else {
+//            onSingleClick(v)
+//        }
+        lastClickTime = clickTime
+    }
+
+    //    abstract fun onSingleClick(v: View?)
+    abstract fun onDoubleClick(v: View?)
+
+    companion object {
+        private const val DOUBLE_CLICK_TIME_DELTA: Long = 300 //milliseconds
+    }
 }

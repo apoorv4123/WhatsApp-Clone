@@ -13,6 +13,7 @@ import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import com.vanniktech.emoji.EmojiManager
+import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.google.GoogleEmojiProvider
 import kotlinx.android.synthetic.main.activity_chat.*
 
@@ -63,6 +64,11 @@ class ChatActivity : AppCompatActivity() {
         nameTv.text = name
         Picasso.get().load(image).into(userImgView)
 
+        val emojiPopup = EmojiPopup.Builder.fromRootView(rootView).build(msgEdtv)
+        smileBtn.setOnClickListener {
+            emojiPopup.toggle()
+        }
+
         listenToMessages()
 
         sendBtn.setOnClickListener {
@@ -74,6 +80,14 @@ class ChatActivity : AppCompatActivity() {
             }
         }
 
+        chatAdapter.highFiveClick = { id, status ->
+            updateHighFive(id, status)
+        }
+
+    }
+
+    private fun updateHighFive(id: String, status: Boolean) {
+        getMessages(friendId!!).child(id).updateChildren(mapOf("liked" to status))
     }
 
     private fun listenToMessages() {
@@ -113,6 +127,7 @@ class ChatActivity : AppCompatActivity() {
             )
         }
         messages.add(msg)
+        //Notify adapter of the changes
         chatAdapter.notifyItemInserted(messages.size - 1)
         msgRv.scrollToPosition(messages.size - 1) // scroll to the new message position
     }

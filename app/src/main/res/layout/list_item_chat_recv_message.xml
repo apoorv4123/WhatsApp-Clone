@@ -12,6 +12,7 @@
     android:paddingBottom="4dp">
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/messageCardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="0dp"
@@ -36,21 +37,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:lineSpacingExtra="5dp"
-                tools:text="12:00 AM"
                 android:textColor="@color/dark_gray"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                tools:text="12:00 AM" />
 
             <TextView
                 android:id="@+id/contentRcv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                tools:text="Hello World"
                 android:textColor="@color/black"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                tools:text="Hello World" />
 
         </com.google.android.flexbox.FlexboxLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
+    <ImageView
+        android:id="@+id/highFiveImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="@string/like_message"
+        android:focusable="true"
+        android:src="@drawable/ic_high_five_selected"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/messageCardView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
