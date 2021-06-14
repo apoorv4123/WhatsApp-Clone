@@ -97,7 +97,7 @@ class ChatAdapter(private val list: MutableList<ChatEvent>, private val mCurrent
 
     class MessageViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
-    companion object {
+    companion object { // companion object is like static variable of this class
         private const val UNSUPPORTED = -1
         private const val TEXT_MESSAGE_RECEIVED = 0
         private const val TEXT_MESSAGE_SENT = 1

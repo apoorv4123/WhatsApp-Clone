@@ -54,6 +54,7 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-firestore:7.1.1'
     implementation "androidx.paging:paging-runtime-ktx:2.1.2" // For Kotlin use paging-runtime-ktx ->  Paging 2
     implementation 'com.google.firebase:firebase-database-ktx'
+    implementation 'com.firebaseui:firebase-ui-database:7.1.1' // FirebaseUI for Firebase Realtime Database
 
     // Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
@@ -65,4 +66,7 @@ dependencies {
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
 
     implementation 'com.vanniktech:emoji-google:0.7.0'
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0'
+
 }

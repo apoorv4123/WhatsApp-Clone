@@ -1,5 +1,7 @@
 package com.example.whatsappclone.ui
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +18,10 @@ import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.google.GoogleEmojiProvider
 import kotlinx.android.synthetic.main.activity_chat.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 const val UID = "uid"
@@ -69,7 +75,21 @@ class ChatActivity : AppCompatActivity() {
             emojiPopup.toggle()
         }
 
-        listenToMessages()
+        swipeToLoad.setOnRefreshListener {
+            val workerScope = CoroutineScope(Dispatchers.Main)
+            workerScope.launch {
+                delay(2000)
+                swipeToLoad.isRefreshing = false
+            }
+        }
+
+        listenToMessages() { msg, update ->
+            if (update) {
+                updateMessage(msg)
+            } else {
+                addMessage(msg)
+            }
+        }
 
         sendBtn.setOnClickListener {
             msgEdtv.text?.let {
@@ -84,23 +104,45 @@ class ChatActivity : AppCompatActivity() {
             updateHighFive(id, status)
         }
 
+        updateReadCount()
+        markAsRead()
+    }
+
+    private fun updateReadCount() {
+        getInbox(mCurrentUid, friendId!!).child("count").setValue(0)
     }
 
     private fun updateHighFive(id: String, status: Boolean) {
         getMessages(friendId!!).child(id).updateChildren(mapOf("liked" to status))
     }
 
-    private fun listenToMessages() {
+    private fun updateMessage(msg: Message) {
+        val position = messages.indexOfFirst {
+            when (it) {
+                is Message -> it.msgId == msg.msgId
+                else -> false
+            }
+        }
+        messages[position] = msg
+
+        chatAdapter.notifyItemChanged(position)
+    }
+
+    private fun listenToMessages(newMsg: (msg: Message, update: Boolean) -> Unit) {
         getMessages(friendId!!)
             .orderByKey() // childeventListener would listen to all the changes that happened to its children
             .addChildEventListener(object : ChildEventListener {
                 override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                     val msg = snapshot.getValue(Message::class.java)!!
-                    addMessage(msg)
+                    newMsg(msg, false)
                 }
 
-                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                    TODO("Not yet implemented")
+                override fun onChildChanged(
+                    snapshot: DataSnapshot,
+                    previousChildName: String?
+                ) { // to change the look of the message
+                    val msg = snapshot.getValue(Message::class.java)!!
+                    newMsg(msg, true)
                 }
 
                 override fun onChildRemoved(snapshot: DataSnapshot) {
@@ -119,8 +161,10 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun addMessage(msg: Message) {
-        val eventBefore = messages.lastOrNull()
+        val eventBefore =
+            messages.lastOrNull() // If list is empty, I'll get null or else I'll get the last value
 
+        // Add date header if it's a different day
         if ((eventBefore != null && !eventBefore.sentAt.isSameDayAs(msg.sentAt)) || eventBefore == null) {
             messages.add(
                 DateHeader(msg.sentAt, context = this)
@@ -185,6 +229,19 @@ class ChatActivity : AppCompatActivity() {
             mCurrentUid + friendId
         } else {
             friendId + mCurrentUid
+        }
+    }
+
+
+    companion object {
+
+        fun createChatActivity(context: Context, id: String, name: String, image: String): Intent {
+            val intent = Intent(context, ChatActivity::class.java)
+            intent.putExtra(UID, id)
+            intent.putExtra(NAME, name)
+            intent.putExtra(IMAGE, image)
+
+            return intent
         }
     }
 
