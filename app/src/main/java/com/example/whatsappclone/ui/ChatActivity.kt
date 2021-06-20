@@ -105,7 +105,7 @@ class ChatActivity : AppCompatActivity() {
         }
 
         updateReadCount()
-        markAsRead()
+//        markAsRead()
     }
 
     private fun updateReadCount() {

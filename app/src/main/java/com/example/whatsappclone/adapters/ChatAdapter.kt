@@ -46,10 +46,10 @@ class ChatAdapter(private val list: MutableList<ChatEvent>, private val mCurrent
             }
             is Message -> {
                 holder.itemView.apply {
-                    content.text = item.msg
-                    time.text = item.sentAt.formatAsTime()
                     when (getItemViewType(position)) {
                         TEXT_MESSAGE_RECEIVED -> {
+                            contentRcv.text = item.msg
+                            timeRcv.text = item.sentAt.formatAsTime()
                             holder.itemView.messageCardView.setOnClickListener(object :
                                 DoubleClickListener() {
                                 override fun onDoubleClick(v: View?) {
@@ -57,7 +57,7 @@ class ChatAdapter(private val list: MutableList<ChatEvent>, private val mCurrent
                                 }
                             })
                             holder.itemView.highFiveImg.apply {
-                                isVisible = position == itemCount - 1 || item.liked
+                                isVisible = /*position == itemCount - 1 ||*/ item.liked
                                 isSelected = item.liked
                                 setOnClickListener {
                                     highFiveClick?.invoke(item.msgId, !isSelected)
@@ -65,6 +65,8 @@ class ChatAdapter(private val list: MutableList<ChatEvent>, private val mCurrent
                             }
                         }
                         TEXT_MESSAGE_SENT -> {
+                            content.text = item.msg
+                            time.text = item.sentAt.formatAsTime()
                             holder.itemView.highFiveImg.apply {
                                 isVisible = item.liked
                             }
