@@ -12,9 +12,9 @@ import kotlinx.android.synthetic.main.list_item.view.*
 class InboxViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(item: Inbox, onClick: (name: String, photo: String, id: String) -> Unit) =
         with(itemView) {
-            countTv.isVisible = item.count > 0
+            countTv.isVisible = item.count > 0 // Iif count is greater than 0, make the view visible
             countTv.text = item.count.toString()
-            timeTv.text = item.time.formatAsListItem(context)
+            timeTv.text = item.time.formatAsListItem(context) // function in utils
 
             titleTv.text = item.name
             subTitleTv.text = item.msg
